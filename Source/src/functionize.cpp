@@ -121,7 +121,7 @@ void source_code::functionize()
 
 	for(std::vector< line_pair >::iterator itr=lines.begin();itr!=lines.end();)
 		{
-			if(itr->first[0]=='f'&&itr->first[1]=='e'&&itr->first[2]=='f')
+			if(itr->first[0]=='d'&&itr->first[1]=='e'&&itr->first[2]=='f')
 				{
 					int space_count=itr->second;
 					int i1=itr-lines.begin(),i2;

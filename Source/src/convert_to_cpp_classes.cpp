@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <string.h>
+#include <algorithm>
 #include <iostream>
 #include <map>
 
@@ -15,6 +16,27 @@
 
 void convert_to_cpp(unsigned long int start,unsigned long int end,std::vector< line_pair >& lines,std::string& converted_code,function_declaration* _function,std::map< std::string,std::string >& variables );
 
+/** @brief Wraps mentioned type of variable
+ *
+ *  It reads the type if mentioned in the python code  
+ *  @param string type that has type ,int l 
+ *  @return The type of the variable.
+ */
+std::string map_type_(std::string s, int l)
+{
+	if(s=="int")
+		return "long int";
+	if(s=="float")
+		return "float";
+	if(s=="s")
+		return "artificial_string";
+	else {
+		std::cout<<"[ WARNING ] Bad type name "<<s<<"!! on line "<<l<<std::endl;
+		return s;
+	}
+
+
+}
 
 std::string eval_expr_(std::string& s)
 {
@@ -283,31 +305,131 @@ void convert_to_cpp_classes(unsigned long int start,
 				is_function_call=0;
 				itr=itr+2;	//skip = sign
 			}
-			while(itr!=tokens.end())
-				expr.append(*itr++);
-    		expr = eval_expr_(expr);
 
-			if(!is_function_call){
-				variables[v]=expr_type_(expr,variables);
-			
-			converted_code.append((size_t)lines[i].second*tab_size,' ');
-			if(!variables.count(v))
+
+
+			if(std::find(tokens.begin(), tokens.end(),"raw_input")!=tokens.end())
+			{
+				tokens.pop_back();
+				itr=itr+3;
+				bool f = 0;
+				int i = 0;
+				expr.append(*(itr+1));
+				while(*itr!=":") {
+					i++;
+					// if(*itr=="(") f=1;
+					// if(!f) expr.append(*itr);
+					itr++;
+					if(i==1000000)
+					{
+						std::cout<<": missing on line "<<i<<std::endl;
+						exit(0);
+					}
+				}
+				itr++;
+				variables[v]=map_type_(*itr,i);
+				converted_code.append((size_t)lines[i].second*tab_size,' ');			
 				converted_code.append(variables[v]);
-			converted_code.append(expr_type_(v,variables));	
-			converted_code.append(" ");
-			converted_code.append(v);
-			converted_code.append(" = ");
+				if(variables[v]=="artificial_string")
+					converted_code.append(" "+v+"(\"\");\n");					
+				else converted_code.append(" "+v+";\n"	);
 
-			converted_code.append(expr);
-			converted_code.append(";\n");
-			}
-			else{
 				converted_code.append((size_t)lines[i].second*tab_size,' ');
+				converted_code.append("std::cout<<");
 				converted_code.append(expr);
 				converted_code.append(";\n");
+				converted_code.append((size_t)lines[i].second*tab_size,' ');
+				converted_code.append("std::cin>>");
+				converted_code.append(v);
+				converted_code.append(";\n");
 
+				
 			}
+			//all other function calls and varible declarations and procesing
+			else{
+					if(is_function_call)
+						while(itr!=tokens.end()) expr.append(*itr++);
+					else{
+							while(*itr!=":" && itr!=tokens.end())
+								expr.append(*itr++);
+					}
+					//if the type is expliciyly mentioned 
+					bool type_annotated = 1;
+					if(itr == tokens.end())
+					{
+						type_annotated = 0;
+						if(!is_function_call)
+							std::cout<<"[ WARNING ] Auto type predicting at line "<<i<<std::endl;
+					}
 
+					std::vector< std::string >::iterator itr1 = itr;
+					if(type_annotated)	
+						itr1 = itr+1;
+					
+
+		    		expr = eval_expr_(expr);
+
+					if(!is_function_call)
+					{
+						bool not_decl = (variables.find(v) != variables.end());
+				
+							if(!type_annotated)
+								variables[v]=expr_type_(expr,variables);
+							else{
+								std::string t ="";
+								while(itr1!=tokens.end()){
+									t.append(*itr1);
+									itr1++;
+								}
+								variables[v]=map_type_(t,i);
+							}
+									
+							converted_code.append((size_t)lines[i].second*tab_size,' ');		
+							
+								if(expr_type_(expr,variables)=="list")
+								{
+									itr = tokens.begin()+3;
+									converted_code.append("std::"+variables[v]+" ").append(v).append(";");
+									// std::string::iterator itr3=itr;
+									// if(variables.count(*itr3))
+									// {
+									// 	for(std::vector <int>::iterator it=(*itr3).begin();it!=(*itr3).end();it++)
+
+									// }
+
+
+									while(*itr!="]")
+									{
+										if(*itr=="["||*itr==",")
+											itr++;
+ 										else {converted_code.append("\n").append(v).append(".push_back(").append(*itr).append(");");
+ 											itr++;
+ 									}
+ 								    }
+
+
+                                   }
+
+						 		   if(expr_type_(expr,variables)!="list")
+									{	
+										if(!not_decl) 
+										converted_code.append(variables[v]);	
+										converted_code.append(" ");
+										converted_code.append(v);
+										converted_code.append(" = ");
+										converted_code.append(expr);
+										converted_code.append(";\n");
+									
+									}
+					}
+
+					
+					else{// if it is a function call
+						converted_code.append((size_t)lines[i].second*tab_size,' ');
+						converted_code.append(expr);
+						converted_code.append(";\n");
+					}
+			}
 			i++;
 			continue;
 

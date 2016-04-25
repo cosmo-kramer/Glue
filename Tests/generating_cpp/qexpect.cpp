@@ -4,7 +4,7 @@ void pr(long int n)
 {
     while(n>0)
     {
-        std::cout<<n<<"\n";
+        std::cout<<n<<"  "<<"\n";
          n = n-1;
     }
 

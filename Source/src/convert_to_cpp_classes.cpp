@@ -448,6 +448,5 @@ void convert_to_cpp_classes(unsigned long int start,
     //  converted_code.append("\ntalking of this one};\n");
      // the above step to be taken care off in rendering the cpp code
    
- std::cout<<"printing the converted class code\n"<<converted_code <<"haha\n";
 
      }//end of convert_to_cpp_classes

@@ -33,7 +33,6 @@ void self_sanitize(std::string* code) {
     int rem = code->find("re.search(");
     if(rem!=std::string::npos){
     itr =  code->find("re.search(")+10;
-    	// std::cout<<">>>>>>>>>>>"<<itr<<"  "<<"\n";
     while(*(code->begin()+itr)==' ')
     	itr++;
 
@@ -76,7 +75,6 @@ void source_code::functionize()
 
 	code.push_back('\n');
 	self_sanitize(&code);
-	std::cout<<code<<"\n\n\n";
 	for(std::string::iterator itr=code.begin();itr!=code.end();)   //This for loop has no increment part to provide flexibility to inner code 
 	{
 		
@@ -129,7 +127,6 @@ void source_code::functionize()
 					int i1=itr-lines.begin(),i2;
 					while((++itr)->second>space_count);
 					i2=itr-lines.begin()-1; 	
-					std::cout<<"Fucntion -> "<<i1<<"   "<<i2<<"\n";	
 					functions.push_back(int_pair(i1,i2));
 				}
 
@@ -143,7 +140,6 @@ void source_code::functionize()
 	        	i1=itr-lines.begin();
 	        	while((++itr)->second > space_count);
 				i2=itr-lines.begin()-1;
-					std::cout<<"Classes -> "<<i1<<"   "<<i2<<"\n";	
 
 				classes.push_back(int_pair(i1,i2));
 
@@ -153,7 +149,6 @@ void source_code::functionize()
 					only_functions=0;
 					int i1=itr-lines.begin(),i2=lines.size()-1;
 					functions[0]=int_pair(i1,i2);	
-					std::cout<<"Main -> "<<i1<<"   "<<i2<<"\n";	
 
 					break;	
 				}

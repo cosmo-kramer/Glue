@@ -1,6 +1,6 @@
 #include "supporting_libs.h"
 
-long int fib( n)
+long int fib(long int n)
 {
     if(n==0)
     {

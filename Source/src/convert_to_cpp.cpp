@@ -380,7 +380,6 @@ void convert_to_cpp(unsigned long int start,
 		{
 			if(std::count(tokens.begin(),tokens.end(),"range")==0)
 			{
-			std::cout<<"KKK "<<tokens[1]<<"  "<<tokens[3]<<"\n";
 			converted_code.append((size_t)lines[i].second*tab_size,' ');
 
 				converted_code.append("\nfor (auto &").append(tokens[1]).append(" : ").append(tokens[3]).append(")");

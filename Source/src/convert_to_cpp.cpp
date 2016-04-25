@@ -14,6 +14,7 @@
 #include <sstream>
 
 
+
 #include "../Header/include/function_struct.h"
 #include "../Header/include/source_code.h"
  /** @brief Evaluate the python code to C++ code 
@@ -406,7 +407,7 @@ void convert_to_cpp(unsigned long int start,
 			converted_code.append(*(++itr)); 
 			std::string var=*(itr); 
 
-			std::string start_range="0";
+			std::string start_range="";
 			std::string end_range="";
 
 			std::vector< std::string >::iterator itr2;
@@ -414,21 +415,18 @@ void convert_to_cpp(unsigned long int start,
 
 			if(*(++itr2)=="range")
 			{
-				if(*(++itr2)=="(")            //the case of range(3,5)
-				{
-					start_range = *(++itr2);
-					
-					if(*(++itr2)==",")
-					{
-						end_range=*(++itr2);
-					}
-					else						//the case of range(100)
-					{
-						end_range=start_range.append("-1");
-						start_range="0";
-					}
-
-				} //end evaluating the expression in range()
+				itr2 = itr2+2;
+				while(*itr2!=","){
+					start_range.append(*(itr2));
+					itr2++;
+				}
+				itr2++;
+				while(*itr2!=")"){
+					end_range.append(*(itr2));
+					itr2++;
+				}
+				
+				
 
 				
 			}//end the range()

@@ -297,7 +297,6 @@ void convert_to_cpp_classes(unsigned long int start,
 			converted_code.append(" ");
 			converted_code.append(v);
 			converted_code.append(" = ");
-			    		std::cout<<"Evaled  -- "<<expr<<"\n";
 
 			converted_code.append(expr);
 			converted_code.append(";\n");

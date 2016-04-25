@@ -23,7 +23,7 @@ void render_code(source_code &src);
  *  @param input python file
  *  @return COnverted C++ file.
  */
-int main(int arg, char *argv[])
+int main(int argc, char *argv[])
 {
 
 	char *f=argv[1];

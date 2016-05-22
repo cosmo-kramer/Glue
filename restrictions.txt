@@ -1,0 +1,17 @@
+1)No use of dynamic strings 
+	print "Hello"
+
+2)No variable scoping
+	no use of var names
+
+3)specify types
+
+4) Specify data types after function name
+	var r = p(2,8) : int
+
+5) No comments in middle of line
+
+6) Annotate input and necessary type casting
+
+7) Input must be type casted 
+
